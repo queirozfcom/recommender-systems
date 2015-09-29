@@ -1,4 +1,4 @@
-function winner_matrix(input)
+function main(input)
 
   numcols = size(input)[2]
   numrows = size(input)[1]
@@ -49,19 +49,3 @@ function mknewmatrixrow(inputrowmatrix)
   @assert size(outputrowmatrix)[2] == numcols
   outputrowmatrix
 end
-
-res =winner_matrix([1 2 3 4;4 2 2 18])
-
-size(res)
-
-res = winner_matrix(tst)
-
-println(mknewrow( [3 4 5] ))
-
-println(Int32[3 3 4])
-
-arr = Int32[]
-push!(arr,1)
-reshape(arr,1,7)
-
-println([2 3 3 ; 4 5 6])
