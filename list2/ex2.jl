@@ -14,7 +14,7 @@ function main()
 
   plt.bar(ratings,num_ratings)
   plt.xlabel("RATING_GIVEN")
-  plt.ylabel("NUMBER_OF_USER_IDS")
+  plt.ylabel("NUMBER_OF_RATINGS_GIVEN")
   plt.xticks([1,2,3,4,5])
 #   plt.tick_params(axis="x")
 
