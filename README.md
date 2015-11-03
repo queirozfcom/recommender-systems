@@ -1,4 +1,4 @@
-# recommendation_systems
+# Recommender systems
 
 ## Comments
 
