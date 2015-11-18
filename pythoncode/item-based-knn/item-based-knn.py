@@ -109,16 +109,6 @@ def main():
     user_avg_df =  pd.read_csv(data_dir+'u1.base.user_avgs',names=["user_id","rating_avg"])
     similarity_df = pd.read_csv(data_dir+'u1.base.item_similarity')
 
-    # SANITY TEST
-    # for i in range(1,1000):
-    #     for j in range(1,1000):
-    #         ab = sim(similarity_df,i,j)
-    #         ba = sim(similarity_df,j,i)
-            
-    #         if ab-ba != 0.0:
-    #             print("{0} is different from {1}".format(ab,ba))
-
-
     # run the algorithm proper
     result = item_based_knn(train_df,test_df,user_avg_df,similarity_df, k=3)
 
