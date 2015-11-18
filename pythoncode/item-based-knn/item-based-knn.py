@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import numpy as np
 import pandas as pd
 import os.path, sys
@@ -29,6 +31,7 @@ def item_based_knn(train_df,test_df,user_avg_df, similarity_df,k=3,split=0.8):
 
     for index,row in test_df.iterrows():
         item_id = row.loc["item_id"]
+        user_id = row.loc["user_id"]
 
         # using train_df to get the 
         pairs = get_neighbors(train_df,item_id,similarity_df,k)
@@ -54,7 +57,7 @@ def item_based_knn(train_df,test_df,user_avg_df, similarity_df,k=3,split=0.8):
 
         # append to the results file
         with open("results.csv","a") as results_file:
-            line = "{0},{1},{2},{3}\n".format(item_id,original_rating,prediction,RSE)
+            line = "{0},{1},{2},{3},{4}\n".format(user_id,item_id,original_rating,prediction,RSE)
             results_file.write(line)   
 
         print("For item_id {0}, rating_hat is {1} and original rating was {2}, RSE is {3}".format(item_id,prediction,original_rating,RSE))    
@@ -101,7 +104,7 @@ def main():
     data_dir = os.path.join(sys.path[0],'../../data/ml-100k/ml-100k/')
 
     train_df = pd.read_csv(data_dir+'u1.base',sep='\t',names=["user_id","item_id","rating","timestamp"]).drop(["timestamp"],1)
-    test_df = pd.read_csv(data_dir+'u1_e.test',sep='\t',names=["user_id","item_id","rating","timestamp"]).drop(["timestamp"],1)
+    test_df = pd.read_csv(data_dir+'u1_c.test',sep='\t',names=["user_id","item_id","rating","timestamp"]).drop(["timestamp"],1)
 
     user_avg_df =  pd.read_csv(data_dir+'u1.base.user_avgs',names=["user_id","rating_avg"])
     similarity_df = pd.read_csv(data_dir+'u1.base.item_similarity')
