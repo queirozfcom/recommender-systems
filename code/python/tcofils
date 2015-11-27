@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import numpy as np
+import scipy as sp
+from scipy.sparse import lil_matrix
+from src.lib.common import get_data_dir
+
+# user_id movie_id rating timestamp
+ratings = np.genfromtxt(get_data_dir()+"/ml-100k/ml-100k/u.data", delimiter='\t')
+
+max_user_id = int(ratings[:,0].max())
+max_movie_id = int(ratings[:,1].max())
+
+user_movie = lil_matrix((max_user_id,max_movie_id))
+
+for row in ratings:
+    user_id  = int(row[0])
+    movie_id = int(row[1])
+    rating   = row[2]
+
+    user_movie[(user_id-1),(movie_id-1)] = rating
+
+print(user_movie.nnz)
