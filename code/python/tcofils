@@ -2,17 +2,27 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from src.lib.common import get_data_dir
-from src.tcofils.tcofils import generate_dataset
+from src.lib.common import get_data_dir, get_output_dir
+from src.tcofils.tcofils import generate_sl_dataset
 
 # user_id movie_id rating timestamp
 ratings = np.genfromtxt(get_data_dir()+"/ml-100k/ml-100k/u.data", delimiter='\t')
 
-supervised_learning_dataset = generate_dataset(
+
+normalization_method = "user_avg"
+factorization_method = "svd"
+num_factors = 20
+include_time = False
+
+supervised_learning_dataset = generate_sl_dataset(
 	ratings,
-	normalization_method="user_avg",
-	method="svg",
-	num_factors=2, 
-	include_time="naive")
+	normalization_method=normalization_method,
+	factorization_method=factorization_method,
+	num_factors=num_factors, 
+	include_time=include_time)
+
+output_file = get_output_dir()+"/tcofils-dataset-{0}-factors.csv".format(num_factors)
+
+np.savetxt(output_file,supervised_learning_dataset,delimiter=",",fmt='%.5f')
 
 print(supervised_learning_dataset.shape)
