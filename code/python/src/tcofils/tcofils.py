@@ -9,6 +9,7 @@ from sklearn.utils.extmath import randomized_svd
 from src.lib.array import num_nonzero_elements as qtty_nonzeros
 from src.lib.array import replace_zero_elements as replace_zeros
 from src.lib.array import subtract_nonzero_elements as subtract_nonzeros
+from src.tcofils.random_forest import random_forest_regressor
 
 def generate_sl_dataset(
     ratings_matrix,
@@ -37,6 +38,12 @@ def generate_sl_dataset(
 
     return(sl_dataset)
 
+def apply_random_forest_regressor(dataset,num_trees=10,num_folds=2):
+    
+    mae,rmse = random_forest_regressor(dataset,num_trees,num_folds)
+
+    return(mae,rmse)
+
 def _generate_dataset_svd(preference_matrix,num_factors,ratings_matrix,include_time):
     
     # returns the top factors
@@ -60,9 +67,9 @@ def _generate_dataset_svd(preference_matrix,num_factors,ratings_matrix,include_t
         item_factor = VT.T[item_factor_index,:].tolist()
 
         if include_time == "naive":
-            sl_dataset_list.append( user_factor+item_factor+[rating]+[timestamp] )
+            sl_dataset_list.append( [rating]+user_factor+item_factor+[timestamp] )
         elif include_time == False:
-            sl_dataset_list.append( user_factor+item_factor+[rating] )
+            sl_dataset_list.append( [rating]+user_factor+item_factor )
         else:
             raise ValueError("Bad include_time: {0}. Supported values:\"naive\", False.".format(include_time)) 
     
