@@ -6,3 +6,4 @@ venv
 __pycache__
 ml-1m
 data/other
+output
