@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import sys
 
 from sklearn.ensemble import RandomForestClassifier
 from src.lib.common import get_data_dir, get_output_dir
@@ -11,7 +12,7 @@ from src.tcofils.tcofils import generate_sl_dataset, apply_random_forest_regress
 normalization_method = "user_avg"
 factorization_method = "svd"
 num_factors = 8
-include_time = False
+include_time = "standardized"
 
 # random forest
 num_trees = 50
@@ -27,13 +28,16 @@ supervised_learning_dataset = generate_sl_dataset(
     num_factors=num_factors, 
     include_time=include_time)
 
-output_file = get_output_dir()+"/tcofils-dataset-{0}-factors.csv".format(num_factors)
+if include_time:
+    output_file = get_output_dir()+"/tcofils-dataset-{0}-factors-time-{1}.csv".format(num_factors,include_time)
+else:
+    output_file = get_output_dir()+"/tcofils-dataset-{0}-factors.csv".format(num_factors)
 
 np.savetxt(output_file,supervised_learning_dataset,delimiter=",",fmt='%.5f')
 
 mae,rmse = apply_random_forest_regressor(
     supervised_learning_dataset,
     num_trees = num_trees,
-    num_folds=num_folds)
+    num_folds = num_folds)
 
 print("MAE={0:.5f}, RMSE={1:0.5f}".format(mae,rmse))

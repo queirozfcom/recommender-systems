@@ -3,9 +3,10 @@
 
 import numpy as np
 import scipy as sp
+import sys
 
+from sklearn.preprocessing import scale
 from sklearn.utils.extmath import randomized_svd
-
 from src.lib.array import num_nonzero_elements as qtty_nonzeros
 from src.lib.array import replace_zero_elements as replace_zeros
 from src.lib.array import subtract_nonzero_elements as subtract_nonzeros
@@ -52,11 +53,16 @@ def _generate_dataset_svd(preference_matrix,num_factors,ratings_matrix,include_t
     # will use a regular list to make looping faster
     sl_dataset_list = []
 
+    if (include_time == "naive") or (include_time == False):
+        pass # just leave it as is
+    elif include_time == "standardized":    
+        ratings_matrix[:,3] = scale(ratings_matrix[:,3])
+
     for row in ratings_matrix:
         user_id = int(row[0])
         item_id = int(row[1])
         rating = row[2]
-        timestamp = int(row[3])
+        timestamp = row[3]
 
         # note that entry Aij in the preference matrix refers to user i+1 and to item j+1
         # this is due to the fact that array indices start at 0 while ids at 1
@@ -66,12 +72,11 @@ def _generate_dataset_svd(preference_matrix,num_factors,ratings_matrix,include_t
         user_factor = U[user_factor_index,:].tolist()
         item_factor = VT.T[item_factor_index,:].tolist()
 
-        if include_time == "naive":
+        if not (include_time == False):
             sl_dataset_list.append( [rating]+user_factor+item_factor+[timestamp] )
-        elif include_time == False:
-            sl_dataset_list.append( [rating]+user_factor+item_factor )
         else:
-            raise ValueError("Bad include_time: {0}. Supported values:\"naive\", False.".format(include_time)) 
+            # don't include time
+            sl_dataset_list.append( [rating]+user_factor+item_factor )
     
     sl_dataset = np.array(sl_dataset_list)    
 
@@ -110,14 +115,15 @@ def _normalize_user_avg(input_matrix):
 
 def _normalize_item_avg(input_matrix):
 
-    raise ValueError("Not implemented yet. Use _normalize_user_avg instead.")
+    output_matrix = np.copy(input_matrix)
 
-    # non_zeros = lambda column: len(filter(lambda elem: elem != 0,column))
+    item_sums = np.sum(input_matrix,axis=0)
 
-    # item_rating_sums = np.sum(input_matrix,axis=0)
+    number_of_users_that_rated_each_item = np.apply_along_axis(qtty_nonzeros,0,input_matrix)
 
-    # number_of_users_who_rated_each_item = non_zeros(input_matrix.T)
+    item_avgs = item_sums / number_of_users_that_rated_each_item
 
-    # assert(len(number_of_users_who_rated_each_item) == input_matrix.shape[1])
+    for i in range(0,input_matrix.shape[1]):
+        output_matrix[:,i] = subtract_nonzeros(input_matrix[:,i],item_avgs[i])
 
-    # item_avgs = item
+    return(output_matrix)    
