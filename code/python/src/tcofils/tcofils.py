@@ -5,11 +5,12 @@ import numpy as np
 import scipy as sp
 import sys
 
-from sklearn.preprocessing import scale
+from sklearn.preprocessing import scale,OneHotEncoder
 from sklearn.utils.extmath import randomized_svd
 from src.lib.array import num_nonzero_elements as qtty_nonzeros
 from src.lib.array import replace_zero_elements as replace_zeros
 from src.lib.array import subtract_nonzero_elements as subtract_nonzeros
+from src.lib.date import get_day_of_week_from_timestamp
 from src.tcofils.random_forest import random_forest_regressor
 
 def generate_sl_dataset(
@@ -57,12 +58,27 @@ def _generate_dataset_svd(preference_matrix,num_factors,ratings_matrix,include_t
         pass # just leave it as is
     elif include_time == "standardized":    
         ratings_matrix[:,3] = scale(ratings_matrix[:,3])
+    elif include_time == "weekday":
+        v_func = np.vectorize(get_day_of_week_from_timestamp)
+        day_indices = np.apply_along_axis(v_func,0,ratings_matrix[:,3]).reshape(-1,1)
+        # categorical features need to be one-hot encoded
+        enc = OneHotEncoder(sparse=False)
+        enc.fit(day_indices)
+        # remove the timestamps from the dataset,we will replace them with the OHE-array
+        ratings_matrix = np.delete(ratings_matrix,-1,1)
+
+        one_hot_vecs = enc.transform(day_indices)
+
+        # print(one_hot_vecs)
+        # sys.exit()
+
+        ratings_matrix = np.hstack( (ratings_matrix,one_hot_vecs) )
 
     for row in ratings_matrix:
         user_id = int(row[0])
         item_id = int(row[1])
         rating = row[2]
-        timestamp = row[3]
+        timestamp = row[3:].tolist()
 
         # note that entry Aij in the preference matrix refers to user i+1 and to item j+1
         # this is due to the fact that array indices start at 0 while ids at 1
@@ -73,7 +89,7 @@ def _generate_dataset_svd(preference_matrix,num_factors,ratings_matrix,include_t
         item_factor = VT.T[item_factor_index,:].tolist()
 
         if not (include_time == False):
-            sl_dataset_list.append( [rating]+user_factor+item_factor+[timestamp] )
+            sl_dataset_list.append( [rating]+user_factor+item_factor+timestamp )
         else:
             # don't include time
             sl_dataset_list.append( [rating]+user_factor+item_factor )
