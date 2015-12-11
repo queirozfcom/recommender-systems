@@ -10,7 +10,8 @@ from sklearn.utils.extmath import randomized_svd
 from src.lib.array import num_nonzero_elements as qtty_nonzeros
 from src.lib.array import replace_zero_elements as replace_zeros
 from src.lib.array import subtract_nonzero_elements as subtract_nonzeros
-from src.lib.date import get_day_of_week_from_timestamp
+from src.lib import features
+
 from src.tcofils.random_forest import random_forest_regressor
 
 def generate_sl_dataset(
@@ -54,25 +55,14 @@ def _generate_dataset_svd(preference_matrix,num_factors,ratings_matrix,include_t
     # will use a regular list to make looping faster
     sl_dataset_list = []
 
-    if (include_time == "naive") or (include_time == False):
-        pass # just leave it as is
-    elif include_time == "standardized":    
-        ratings_matrix[:,3] = scale(ratings_matrix[:,3])
-    elif include_time == "weekday":
-        v_func = np.vectorize(get_day_of_week_from_timestamp)
-        day_indices = np.apply_along_axis(v_func,0,ratings_matrix[:,3]).reshape(-1,1)
-        # categorical features need to be one-hot encoded
-        enc = OneHotEncoder(sparse=False)
-        enc.fit(day_indices)
-        # remove the timestamps from the dataset,we will replace them with the OHE-array
-        ratings_matrix = np.delete(ratings_matrix,-1,1)
+    #calculate the new time columns depending upon the given strategy
+    new_time_cols = features.transform_time_column(ratings_matrix[:,3],include_time)
 
-        one_hot_vecs = enc.transform(day_indices)
+    # drop the old timestamp column
+    ratings_matrix = np.delete(ratings_matrix,-1,1)
 
-        # print(one_hot_vecs)
-        # sys.exit()
-
-        ratings_matrix = np.hstack( (ratings_matrix,one_hot_vecs) )
+    # append the new one(s)
+    ratings_matrix = np.hstack( (ratings_matrix,new_time_cols) )
 
     for row in ratings_matrix:
         user_id = int(row[0])

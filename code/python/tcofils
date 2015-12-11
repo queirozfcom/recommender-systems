@@ -12,7 +12,7 @@ from src.tcofils.tcofils import generate_sl_dataset, apply_random_forest_regress
 normalization_method = "user_avg"
 factorization_method = "svd"
 num_factors = 8
-include_time = "weekday"
+include_time = "standardized"
 
 # random forest
 num_trees = 50
@@ -35,9 +35,9 @@ else:
 
 np.savetxt(output_file,supervised_learning_dataset,delimiter=",",fmt='%.5f')
 
-mae,rmse = apply_random_forest_regressor(
-    supervised_learning_dataset,
-    num_trees = num_trees,
-    num_folds = num_folds)
+# mae,rmse = apply_random_forest_regressor(
+#     supervised_learning_dataset,
+#     num_trees = num_trees,
+#     num_folds = num_folds)
 
-print("MAE={0:.5f}, RMSE={1:0.5f}".format(mae,rmse))
+# print("MAE={0:.5f}, RMSE={1:0.5f}".format(mae,rmse))
