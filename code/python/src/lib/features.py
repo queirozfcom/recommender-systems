@@ -1,7 +1,9 @@
 import numpy as np
 
 from sklearn.preprocessing import scale,OneHotEncoder
-from src.lib.date import get_day_of_week_from_timestamp
+from src.lib.date import day_of_week_from_timestamp
+from src.lib.date import day_of_month_from_timestamp
+from src.lib.date import am_pm_from_timestamp
 
 def transform_time_column(column,strategy):
     """
@@ -17,7 +19,7 @@ def transform_time_column(column,strategy):
             "standardized",
             "day_of_week",
             "day_of_month",
-            "season"       
+            "am_pm"       
     """
     if strategy == False:
         return(column)
@@ -30,8 +32,8 @@ def transform_time_column(column,strategy):
             return(_day_of_week(column))
         elif strategy == "day_of_month":
             return(_day_of_month(column))
-        elif strategy == "season":
-            return(_season(column))   
+        elif strategy == "am_pm":
+            return(_am_pm(column))   
         else:
             raise ValueError("Invalid strategy: {0}".format(strategy))          
 
@@ -42,7 +44,7 @@ def _standardized(column):
     return(scale(column).reshape(-1,1))
 
 def _day_of_week(column):
-    v_func = np.vectorize(get_day_of_week_from_timestamp)
+    v_func = np.vectorize(day_of_week_from_timestamp)
     day_indices = np.apply_along_axis(v_func,0,column).reshape(-1,1)
     
     # categorical features need to be one-hot encoded
@@ -54,9 +56,27 @@ def _day_of_week(column):
     return(one_hot_vecs)
 
 def _day_of_month(column):
-    raise ValueError("Not implemented yet")
+    v_func = np.vectorize(day_of_month_from_timestamp)
+    day_indices = np.apply_along_axis(v_func,0,column).reshape(-1,1)
+    
+    # categorical features need to be one-hot encoded
+    enc = OneHotEncoder(sparse=False)
+    enc.fit(day_indices)
 
-def _season(column):
-    raise ValueError("Not implemented yet")
+    one_hot_vecs = enc.transform(day_indices)
+
+    return(one_hot_vecs)
+
+def _am_pm(column):
+    v_func = np.vectorize(am_pm_from_timestamp)
+    day_indices = np.apply_along_axis(v_func,0,column).reshape(-1,1)
+    
+    # categorical features need to be one-hot encoded
+    enc = OneHotEncoder(sparse=False)
+    enc.fit(day_indices)
+
+    one_hot_vecs = enc.transform(day_indices)
+
+    return(one_hot_vecs)
 
 
