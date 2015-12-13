@@ -1,10 +1,16 @@
 # Recommender systems
 
+Code for COS836 - Topics in Database Systems - Recommender Systems at COPPE/UFRJ
+
 ## Comments
 
 ### List 1
 
+- Located under `code/julia/list-1`
+
 ### List 2
+
+- Located under `code/julia/list-2` 
 
 - ex 3,4:
 
@@ -21,9 +27,11 @@
 
 ### Item-based K-Nearest Neighbours Algorithm
 
+- Located under `code/python/item-based-knn/`
+
  > Based upon [Andre Ng's CS 229 notes](http://cs229.stanford.edu/proj2008/Wen-RecommendationSystemBasedOnCollaborativeFiltering.pdf)
 
-`item-based-knn/item-based-knn.py` is a naïve implementation of the k-nearest neighbours algorithm applied for recommending items.
+`item-based-knn.py` is a naïve implementation of the k-nearest neighbours algorithm applied for recommending items.
 
 The general idea is to find items that are similar to a movie *m* so that we can determine what rating a user *u* would give for movie *m*, given that user *u* has not yet seen movie *m*. I have used the **adjusted cosine similarity** between movies a and b, as follows:
 
@@ -35,9 +43,16 @@ Sample results can be found in file `item-based-knn/results.csv`, which is of th
 
 ### SVD Algorithm
 
+- Located under `code/python/svd/`
+
 This algorithm tries to decompose and discover a *low-dimensional* approximation of the **user-movie** matrix (**A**), where each row represents a user and each column represents a movie, and element **Aij** represents the *rating* user *i* gave to movie *j*.
 
 Each user *u* and movie *m* have a **feature vector**, modelled in the same feature-space. Unknown ratings can be inferred by performing the dot product between the feature vectors for user *u* and movie *m*.
 
-It can be accessed in `svd/svd.py`.
+### Final Project: Adding Temporal Features to COFILS method
 
+- Located under `code/python/tcofils/`
+
+ - Executable file (entry point): `code/python/tcofils`
+
+Add temporal features to the method created by Braida et al. (2015). [Presentation link](https://docs.google.com/presentation/d/1quFFebU2GBVY23mU6wxP6WHqpQ8Ho5uuXnYpa2B5958/edit?usp=sharing)
