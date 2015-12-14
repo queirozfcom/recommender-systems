@@ -57,7 +57,7 @@ We experiment with several ways of adding temporal features to the dataset obtai
 
  - Executable file (entry point): `code/python/tcofils`
 
-- [Link to presentation](https://docs.google.com/presentation/d/1quFFebU2GBVY23mU6wxP6WHqpQ8Ho5uuXnYpa2B5958/edit?usp=sharing)
+- [Link to presentation (in Portuguese)](https://docs.google.com/presentation/d/1quFFebU2GBVY23mU6wxP6WHqpQ8Ho5uuXnYpa2B5958/edit?usp=sharing)
 
 
 

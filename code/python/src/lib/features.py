@@ -22,7 +22,7 @@ def transform_time_column(column,strategy):
             "am_pm"       
     """
     if strategy == False:
-        return(column)
+        return(_identity(column))
     else:
         if strategy == "naive":
             return(_naive(column))
@@ -37,6 +37,9 @@ def transform_time_column(column,strategy):
         else:
             raise ValueError("Invalid strategy: {0}".format(strategy))          
 
+def _identity(column):
+    return(column.reshape(-1,1))
+    
 def _naive(column):
     return(column.reshape(-1,1))
 
