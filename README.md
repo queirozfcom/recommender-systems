@@ -31,9 +31,7 @@ Code for COS836 - Topics in Database Systems - Recommender Systems at COPPE/UFRJ
 
 `item-based-knn.py` is a naïve implementation of the k-nearest neighbours algorithm applied for recommending items.
 
-The general idea is to find items that are similar to a movie *m* so that we can determine what rating a user *u* would give for movie *m*, given that user *u* has not yet seen movie *m*. I have used the **adjusted cosine similarity** between movies a and b, as follows:
-
-![adjusted cosine similarity](http://latex2png.com/output//latex_6561357334a98e738333f703f88f90b3.png)
+The general idea is to find items that are similar to a movie *m* so that we can determine what rating a user *u* would give for movie *m*, given that user *u* has not yet seen movie *m*. I have used the **adjusted cosine similarity** between movies a and b.
 
 Sample results can be found in file `results.csv`, which is of the form: 
 
