@@ -1,5 +1,5 @@
 decorator==4.0.4
-ipython==4.0.0
+ipython==7.16.3
 ipython-genutils==0.1.0
 numpy==1.10.1
 pandas==0.17.0
